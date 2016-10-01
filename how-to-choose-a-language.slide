@@ -1,0 +1,592 @@
+How to Choose a Language & Principles of Go
+Or 'Stop the Flame Wars and Choose the Right Tool for the Job'
+1 Oct 2016
+
+Adrian Lanzafame
+Associate Software Engineer, Console
+adrianlanzafame92@gmail.com
+@LanzafameAdrian
+
+* Licence and Attribution
+
+I have borrowed extensively from Dave Cheney's "Introduction to Go"
+
+.link http://go-talks.appspot.com/github.com/davecheney/presentations/how-to-choose-a-language.slide
+
+As this is a derivatie, it continues to be licenced under the BSD licence that covers the Go project
+
+.link http://golang.org/LICENSE
+
+* Outline
+
+I will be covering the following:
+
+- How to break down a project's business/technical requirements
+- Understanding what constraints or freedoms these requirements place on your language choice
+- Determining which language best fits within the given constraints
+- An overview of the Go programming language
+- Some use cases where Go is a suitable language and some where it is not suitable
+
+* Breaking things down
+
+To help in break down your problem, you want to answer the following:
+
+- Who?
+- What?
+- When?
+- Where?
+- How?
+
+about the following areas:
+
+- Users
+- Program
+- Team
+- Business
+
+* Users
+
+So let's get the obvious out of the way:
+
+- Who is using your program?
+- Where is this group using it?
+- How much are they using it?
+
+* Examples
+
+Why are these questions important?
+They provide the context to your program.
+
+- Who is using your program? 
+
+_Enterprise_: your program will be expected to be much more stable
+
+- Where is this group using it? 
+
+_Mobile_: your language choice is now limited to what will run on mobile platforms*
+
+- How much are they using it?
+
+_Constantly_ vs _Intermittently_: does your program need to handle small but critical use or does it need to handle constant traffic?
+
+*This becoming less of a issue but not every language is a first class citizen on mobile.
+
+* Program
+
+- What is your program doing?
+- When is your program being run?
+- Where is your program being run?
+- How is your program being run?
+
+* Examples
+
+- What is your program doing?
+: controlling the topology of a network, driving a car, configuring software infrastructure
+- When is your program being run?
+: Batch processing, streaming
+- Where is your program being run?
+: ARM, co-located cloud servers, bare-metal
+- How is your program being run?
+: Distributed system, IoT devices, autonomous vehicles
+
+* Team
+
+Consider the team you have and also the team you want to have?
+
+Other points to consider:
+
+- The number of developers on your team
+- The number of developers about to join your team
+- On-boarding of developers is an often forgotten cost
+- Can you understand all the code that your fellow team mates write?
+
+Though your team might be the last thing you think about when choosing a language, it can be a painful thing to forget.
+
+* Example
+
+.code how-to-choose-a-language/scalaz.scala
+
+The above snippet is from an article by Jim Plush at Gravity in which he outlines some of the team issues that arose from using Scala.
+
+: imagine the scenario, you are on-boarding a junior level developer, who has limited functional programming experience
+
+.link http://jimplush.com/talk/2015/12/19/moving-a-team-from-scala-to-golang/
+
+* Business
+
+- Are you in an enterprise company, or a startup, or a startup catering to enterprise companies?
+- The stability of the language you chose may be important to the business
+- Can you sell your language choice to the business?
+
+* Principles of Go
+
+* The Go programming language
+
+- Modern
+- Compact, concise, general-purpose
+- Imperative, statically type-checked, dynamically type-safe
+- Garbage-collected
+- Opinionated, no warnings, unused local vars and imports are an error
+- Strong support for concurrency
+- Compiles to native code, statically linked
+- Fast compilation, efficient execution
+
+Designed by programmers for programmers!
+
+* Origins of Go
+
+Go started in 2007 by Rob Pike, Robert Griesemer, Ken Thompson.
+
+Russ Cox and Ian Lance Taylor joined soon after.
+
+There is a story that Go was designed while waiting for a C++ program to compile.
+
+In reality, Go was a response to the many of the frustrations that Rob, Robert and Ken experienced with the languages in use at Google at that time; C++, Java, and Python.
+
+Rob Pike's 2012 paper, [[http://commandcenter.blogspot.com.au/2012/06/less-is-exponentially-more.html][Less is exponentially more]] gives an excellent overview of the environment that gave rise to Go.
+
+* Hello, World!
+
+.play how-to-choose-a-language/hello.go
+
+: Unicode
+: Programs are organized in packages
+: A package is a set of package files
+: A package file expresses its dependencies on other packages via import declarations
+: The remainder of a package file is a list of (constant, variable, type, and function) declarations
+
+* Hello, World! Internet-style
+
+.play how-to-choose-a-language/hellohttp.go
+
+* Program elements
+
+* Constants
+
+- Maintained precisely:
+	const e = 2.71828182845904523536028747135266249775724709369995957496696763
+	const third = 1/3
+- Typed or without type:
+	const M64 int64 = 1<<20
+        const M = 1<<20
+- Evaluated at compile-time:
+	const big = 1<<100 / 1e30  // valid constant expression
+
+Compiler complains if a constant doesn't fit where it is _used_.
+
+.link http://blog.golang.org/constants
+
+* Variables
+
+- Statically typed:
+	var x int
+	var s, t string
+- Implicitly or explicitly initialized:
+	var x int
+	var s, t string = "foo", "bar"  // multiple assignment
+
+	var x = 42                      // int
+	var s, b = "foo", true          // string, bool
+- Short variable declaration (inside functions only):
+	x := 42
+	s, b := "foo", true
+- Can safely take address of _any_ variable!
+	return &x
+: compiler will do the right thing
+
+
+* Types
+
+- Predeclared types, the usual suspects:
+	uint8 (byte), uint16, uint32, uint32, uint64,
+	int8, int16, int32, int32 (rune), int64,
+	float32, float64,
+	complex64, complex128,
+	uint, int, uintptr,
+	bool, string,
+	error  // not so usual
+
+- Composite types:
+	array, struct, pointer, function,
+	slice, map, channel
+
+- Abstract type:
+	interface
+
+
+* Type declarations
+
+- Composition from left-to-right (Pascal style):
+	[10]byte  // array of 10 bytes
+
+	struct {
+		name        string
+		left, right *Node
+		action      func(*Node)
+	}
+
+	func(a, b, c int)
+	func(http.ResponseWriter, *http.Request) error
+
+- A type declaration defines a _new_ type:
+	type Weekday int
+
+	type Point struct {
+		x, y int
+	}
+
+
+* Slices
+
+	[]T  // slice of T
+
+- Descriptor for an underlying array segment
+- May grow and shrink
+- Has length and capacity
+- Assigning a slice copies the descriptor, not the underlying array
+
+Common slice operations:
+
+	len(s)
+	s[i]
+	s[i:j]
+	append(s, x)  // append element x to slice s and return new slice
+
+- Slices play the role of dynamically sized arrays
+- Widely used in Go code
+
+* Pointers
+
+- Pointers are values which point to other values
+- For each type, there exists a distinct pointer type, accessible via the address of, `&`, and dereference, `*` operators.
+- No pointer arithmetic
+
+        x := 1000
+        y := &x
+        y += 4          // nope
+
+
+* Maps
+
+	map[K]V  // map K -> V
+
+- Map is a language-supplied hash table
+- Maps values of key type K to values of type V
+- Assigning a map copies the map reference, not the map contents
+
+Common map operations:
+
+	make(map[K]V)
+	len(m)
+	m[k]
+	delete(m, k)
+
+- Map iteration order is not specified:
+
+	for key, value := range m {
+		// order of key sequence different each time
+	}
+
+* Statements
+
+- Curly braces (C style)
+- Multiple assignments and some other new constructs
+- Statements are _not_ Expressions.
+- Many cleanups: mandatory braces, no parentheses for conditionals, implicit break in switches, no semicolons, etc.
+	a, b = b, a                 // swap
+	f, err = os.Open(filename)
+
+	if x < y {
+		return x
+	} else {
+		return y
+	}
+
+	switch day {
+	case Mon:
+		...
+		// break is implicit
+	case Tue, Wed:
+		...
+	}
+
+* Statements, continued
+
+- Unified `for` syntax
+
+	for {
+		// loop forever
+	}
+
+
+
+`range` over arrays, slices, and maps
+
+	for i, num := range numbers { ... }
+	for city, pop := range population { ... }
+
+Not shown: break, goto, continue, fallthrough
+
+* Functions
+
+- Regular functions
+	func Sin(x float64) float64
+	func AddScale(x, y int, f float64) int
+
+- Multiple return values
+	func Write(data []byte) (written int, err error)
+
+- Variadic parameter lists without magic
+	func Printf(format string, args ...interface{})
+
+- Functions are first-class values
+	var delta int
+	return func(x int) int { return x + delta }
+
+* Methods
+
+Methods are functions with a _receiver_ parameter:
+
+.code how-to-choose-a-language/point.go /String START/,/String END/
+
+The receiver binds the method to its _base_type_ (Point):
+
+.code how-to-choose-a-language/point.go /Point START/,/Point END/
+
+Methods are invoked via the usual dot notation:
+
+.play how-to-choose-a-language/point.go /main START/,/main END/
+
+
+* Methods can be defined for any user-defined type!
+
+For the Weekday type:
+
+.code how-to-choose-a-language/weekday.go /type START/,/type END/
+
+Define String method on Weekday:
+
+.code how-to-choose-a-language/weekday.go /String START/,/String END/
+
+.play how-to-choose-a-language/weekday.go /main START/,/main END/
+
+Method calls via non-interface types are statically dispatched.
+
+* Interface types
+
+- Abstract
+- Define (possibly empty) set of method signatures
+- Values of _any_type_ that implement all methods of an interface can be assigned to a variable of that interface.
+
+Examples:
+
+	interface{}  // empty interface
+
+	interface {
+		String() string
+	}
+
+	interface {
+		Len() int
+		Swap(i, j int)
+		Less(i, j int) bool
+	}
+
+
+* Using interfaces
+
+.code how-to-choose-a-language/stringer.go /Stringer START/,/Stringer END/
+
+Both Weekday and Point define a String method, so values of both can be assigned to
+a variable of Stringer type:
+
+.play how-to-choose-a-language/stringer.go /main START/,/main END/
+
+Method calls via interface types are dynamically dispatched ("virtual function call").
+
+* Concurrency
+
+* Goroutines
+
+- The _go_ statement launches a function call as a goroutine
+	go f()
+	go f(x, y, ...)
+
+- A goroutine runs concurrently (but not necessarily in parallel)
+- A goroutine is a thread of control within the program, with its own local variables and stack. Much cheaper to create and schedule than operating system threads.
+
+
+* A simple example
+
+.code how-to-choose-a-language/concurrency1.go /f START/,/f END/
+
+Function f is launched as 3 different goroutines, all running concurrently:
+
+.play how-to-choose-a-language/concurrency1.go /main START/,/main END/
+
+
+* Communication via channels
+
+A channel type specifies a channel value type (and possibly a communication direction):
+
+	chan int
+	chan<- string  // send-only channel
+	<-chan T       // receive-only channel
+
+A channel is a variable of channel type:
+
+	var ch chan int
+	ch := make(chan int)  // declare and initialize with newly made channel
+
+A channel permits _sending_ and _receiving_ values:
+
+	ch <- 1   // send value 1 on channel ch
+	x = <-ch  // receive a value from channel ch (and assign to x)
+
+Channel operations synchronize the communicating goroutines.
+
+* Communicating goroutines
+
+Each goroutine sends its results via channel ch:
+
+.code how-to-choose-a-language/concurrency2.go /f START/,/f END/
+
+The main goroutine receives (and prints) all results from the same channel:
+
+.play how-to-choose-a-language/concurrency2.go /main START/,/main END/
+
+* Packages
+
+- Packages define boundaries for compilation and reuse.
+- Packages are directories containing source code.
+- The unit of compilation is the package, not the file.
+- You import a whole package, not a type, or a symbol.
+
+Packages you import are referenced by their package's prefix.
+
+	import "fmt"
+
+	func main() {
+		fmt.Printf("Hello %s\n", "world)
+	}
+
+Import cycles are not permitted.
+
+* Language implementation
+
+* Small, well polished standard library
+
+- The usual libc/libm cast of characters.
+- Support for networking, HTTP, TLS.
+- Support for common encodings, XML, JSON.
+- Support for compression, tar, etc.
+
+.link http://golang.org/pkg/
+
+To a first order approximation, the std lib provides only the things needed to build Go itself.
+
+* Excellent cross platform support
+
+- Windows, OS X, Linux, {Free,Open,Net,DragonFly}BSD, Solaris, MIPS <- Run golang on your OpenWRT router!
+
+* Tools
+
+`/usr/bin/go`
+
+Simple, zero configuration, build tool.
+
+All commands and paths are relative to your [[http://golang.org/doc/code.html#GOPATH][$GOPATH]] workspace.
+
+Supports conditional compilation via suffixes and build tags.
+
+Support for cross compilation.
+
+	GOARCH=386 GOOS=windows go build mycmd
+
+* More tools
+
+Read package documentation
+
+	godoc $PKG
+
+Lint your code
+
+	go vet $PKG
+
+Solve code formatting issues, once and for all
+
+	go fmt $PKG
+
+Built in [[http://golang.org/pkg/testing/][testing framework]], including benchmarking and [[http://blog.golang.org/cover][coverage reports]]
+
+	go test $PKG
+	go test -cover $PKG
+
+Built in [[http://blog.golang.org/race-detector][race detector]] (based on [[https://code.google.com/p/data-race-test/wiki/ThreadSanitizer][ThreadSantizer]])
+
+	go {build,test,install} -race $PKG
+
+* How to get started
+
+Start with the tour, [[https://tour.golang.org][tour.golang.org]]
+
+Read [[http://golang.org/doc/effective_go.html][Effective Go]]
+
+* Go Proverbs
+
+Simple, Poetic, Pithy
+
+Don't communicate by sharing memory, share memory by communicating.
+
+Concurrency is not parallelism.
+
+Channels orchestrate; mutexes serialize.
+
+The bigger the interface, the weaker the abstraction.
+
+Make the zero value useful.
+
+interface{} says nothing.
+
+Gofmt's style is no one's favorite, yet gofmt is everyone's favorite.
+
+A little copying is better than a little dependency.
+
+Syscall must always be guarded with build tags.
+
+Cgo must always be guarded with build tags.
+
+Cgo is not Go.
+
+With the unsafe package there are no guarantees.
+
+Clear is better than clever.
+
+Reflection is never clear.
+
+Errors are values.
+
+Don't just check errors, handle them gracefully.
+
+Design the architecture, name the components, document the details.
+
+Documentation is for users.
+
+Don't panic.
+
+.link https://go-proverbs.github.io/
+
+* Questions
+
+This talk is online
+
+[[http://talks.godoc.org/github.com/Lanzafame/presentations/how-to-choose-a-language.slide][talks.godoc.org/github.com/Lanzafame/presentations/how-to-choose-a-language.slide]]
+
+All the links inside the talk are clickable, I encourage you to follow them.
+
+Also, please take the time to visit
+
+- Rob Pike's [[http://talks.golang.org/2014/hellogophers.slide][Gophercon 2014 Keynote]]
+
+- Francesc Campoy Flores' [[http://talks.golang.org/2013/go4python.slide][Go for Pythonistas]] and [[http://talks.golang.org/2014/go4java.slide][Go for Javaïstes]]
+
