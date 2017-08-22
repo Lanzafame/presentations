@@ -1,0 +1,31 @@
+Interfaces
+reverse([]string{"the good", "the bad", "the misleading"})
+23 Aug 2017
+
+Adrian Lanzafame
+Software Developer, Genie Solutions
+adrianlanzafame92@gmail.com
+@LanzafameAdrian
+
+* Interfaces
+
+* The Misleading
+
+
+
+* The Bad
+
+* The Good
+
+The `io` package has two classic idiomatic Go interfaces, the `io.Reader` and `io.Writer` interfaces:
+
+.code interfaces-good-bad-misleading/io.go /^type Reader/,/^}/
+
+.code interfaces-good-bad-misleading/io.go /^type Writer/,/^}/
+
+The simple functiontional interface 
+
+The `io.Reader` and `io.Writer` allow for immense flexibility with 
+
+
+
