@@ -1,5 +1,5 @@
 Interfaces
-reverse([]string{"the good", "the bad", "the misleading"})
+The Misleading and a Fix
 23 Aug 2017
 
 Adrian Lanzafame
@@ -11,21 +11,35 @@ adrianlanzafame92@gmail.com
 
 * The Misleading
 
+An example: 
 
+.code interfaces-good-bad-misleading/misleading/client.go /^type Client/,/^}/
 
-* The Bad
+Well not quite...
 
-* The Good
+Let's look at something that implements the `Client` interface.
 
-The `io` package has two classic idiomatic Go interfaces, the `io.Reader` and `io.Writer` interfaces:
+* The Misleading Implementation
 
-.code interfaces-good-bad-misleading/io.go /^type Reader/,/^}/
+.code interfaces-good-bad-misleading/misleading/fileclient.go /^type fileClient/,$
 
-.code interfaces-good-bad-misleading/io.go /^type Writer/,/^}/
+* Live Demo Time
 
-The simple functiontional interface 
+* A Fix
 
-The `io.Reader` and `io.Writer` allow for immense flexibility with 
+Change this:
 
+.code interfaces-good-bad-misleading/misleading/fileclient.go /^func NewFileClient/,/^}/
 
+.code interfaces-good-bad-misleading/misleading/fileclient.go /^type fileClient/,/^}/
 
+to this:
+
+.code interfaces-good-bad-misleading/fix/fileclient.go /^func NewFileClient/,/^}/
+
+.code interfaces-good-bad-misleading/fix/fileclient.go /^type FileClient/,/^}/
+
+* Rule of Thumb
+
+_Accept_interfaces,_return_structs._
+.caption Jack Lindamood
