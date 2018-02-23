@@ -1,0 +1,49 @@
+Interfaces
+23 Feb 2018
+
+Adrian Lanzafame
+adrianlanzafame92@gmail.com
+@LanzafameAdrian
+
+* Interfaces
+
+Interfaces in Go provide a way to specify the behavior of an object: if something can do this, then it can be used here.
+
+Distinction between an interface type and an interface value:
+
+    // Pusher is an interface type.
+    type Pusher interface {
+        Push()
+    }
+
+    // p is an empty interface value.
+    var p interface{}
+
+.link https://play.golang.org/p/xf0F5MOM5r2
+
+* Behaviour not State
+
+Example of OOP-like type hierarchies:
+
+.link https://play.golang.org/p/r6to0aMm6I
+
+Example of grouping by  behaviour:
+
+.link https://play.golang.org/p/yOj1zJCRlj
+
+* Composition
+
+Example of interface composition:
+
+.link https://play.golang.org/p/s7B4mmIvtj
+
+* Internals of an Interface
+
+What is an interface value?
+
+.image interfaces/interface-internal.png
+
+* Rule of Thumb
+
+_Accept_interfaces,_return_structs._
+.caption Jack Lindamood
